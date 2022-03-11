@@ -1,0 +1,129 @@
+.container {
+    max-width: 1180px;
+    margin: 0 auto;
+}
+div,
+a,
+li {
+    border-radius: 3px;
+}
+
+/* Header */
+
+header {
+    background-color: #164333;
+    color: #fff;
+}
+header h1 {
+    font-size: 50px;
+    font-weight: 100;
+}
+header ul {
+    display: flex;
+    padding-bottom: 10px;
+}
+
+header a {
+    color: #fff;
+    display: block;
+    padding: 5px;
+    margin-right: 10px;
+}
+header a:hover {
+    background-color: #fff;
+    color: #164333;
+}
+
+/* Main */
+
+main .row {
+    display: flex;
+    flex-wrap: wrap;
+}
+main .block {
+    flex: 0 0 calc(20% - 20px);
+    height: 100px;
+    background-color: #c4d3ff;
+    padding: 10px;
+    box-shadow: -5px -5px 20px 1px #9eb6ff inset;
+    font-size: 20px;
+}
+@media (max-width: 900px) {
+    main .block {
+        flex: 0 0 calc(25% - 20px);
+    }
+}
+@media (max-width: 600px) {
+    main .block {
+        flex: 0 0 calc(33.333% - 20px);
+    }
+}
+@media (max-width: 400px) {
+    main .block {
+        flex: 0 0 calc(50% - 20px);
+    }
+}
+@media (max-width: 200px) {
+    main .block {
+        flex: 0 0 calc(100% - 20px);
+    }
+}
+main .block * {
+    height: 33%;
+}
+main .currency_before,
+.currency_after {
+    text-align: right;
+}
+main p {
+    margin: 10px 0;
+}
+main .block_buy_cell {
+    background-color: #c4d3ff;
+    padding: 10px 20px;
+    box-shadow: -5px -5px 20px 1px #9eb6ff inset;
+}
+main input {
+    margin: 10px 10px 10px 0;
+}
+
+main button {
+    padding: 0 10px;
+    margin: 10px;
+    background-color: #c4d3ff;
+    border-radius: 3px;
+    cursor: pointer;
+}
+.calc .currency_input {
+    display: inline-block;
+    width: 200px;
+    margin: 10px 10px 10px 0;
+    border: none;
+}
+
+/* Footer */
+
+footer {
+    background-color: #111;
+    padding: 20px 0;
+}
+footer .container {
+    display: flex;
+}
+footer * {
+    color: #fff;
+}
+footer h2 {
+    font-size: 30px;
+}
+footer p {
+    color: #777;
+}
+footer .about,
+footer ul {
+    flex: 0 0 33.333%;
+}
+footer a:hover {
+    background-color: #fff;
+    color: #111;
+}
