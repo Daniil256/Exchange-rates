@@ -30,3 +30,22 @@ p {
   font-weight: normal;
   list-style: none;
 }
+* {
+  box-sizing: border-box;
+}
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+div,
+a,
+li {
+  border-radius: 3px;
+}
+span {
+  margin: 5px 0;
+  display: inline-block;
+}
+select {
+  margin: 0 5px;
+}

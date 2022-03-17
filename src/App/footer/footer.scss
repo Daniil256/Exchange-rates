@@ -1,0 +1,43 @@
+footer {
+    background-color: #111;
+    padding: 20px 0;
+    * {
+        color: #fff;
+    }
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    h2 {
+        font-size: 30px;
+    }
+    p {
+        color: #777;
+    }
+    .about,
+    ul {
+        flex: 0 0 33.333%;
+    }
+    a:hover {
+        background-color: #fff;
+        color: #111;
+    }
+    @media (max-width: 600px) {
+        * {
+            font-size: 16px;
+        }
+        h2 {
+            font-size: 25px;
+        }
+    }
+    @media (max-width: 400px) {
+        .about,
+        ul {
+            flex: 0 0 100%;
+            text-align: center;
+        }
+        .container {
+        }
+    }
+}

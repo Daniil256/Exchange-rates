@@ -1,19 +1,16 @@
-import './App.css'
+import './header.css'
 import React from 'react'
 
 class Header extends React.Component {
-    // constructor(props) {
-    //     super(props)
-    // }
     render() {
         return (
             <header>
                 <div className='container'>
-                    <h1>Приложение курса валют</h1>
+                    <h1>Курс валют на {this.props.date} </h1>
                     <ul>
                         <li><a href='/'>Главная</a></li>
-                        <li><a href='/map'>Пункты обмена</a></li>
-                        <li><a href='/contacts'>Контакты</a></li>
+                        <li><a href='/calc'>Калькулятор валюты</a></li>
+                        <li><a href='/test'>Контакты</a></li>
                     </ul>
                 </div>
             </header>

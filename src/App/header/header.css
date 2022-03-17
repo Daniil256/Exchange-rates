@@ -1,0 +1,57 @@
+header {
+  color: #fff;
+  position: relative;
+  background-color: #164333;
+}
+
+header h1 {
+  font-weight: 100;
+  font-size: 5vmax;
+}
+
+header ul {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  padding-bottom: 10px;
+}
+
+header a {
+  color: #fff;
+  display: block;
+  padding: 5px;
+  margin-right: 10px;
+}
+
+header a:hover {
+  background-color: #fff;
+  color: #164333;
+}
+
+@media (min-width: 1400px) {
+  header h1 {
+    font-size: 70px;
+  }
+}
+
+@media (max-width: 600px) {
+  header a {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 400px) {
+  header h1 {
+    padding: 0 40px 0 15px;
+    display: block;
+  }
+  header ul {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+  }
+  header ul li a {
+    margin: 2px 10px;
+  }
+}
