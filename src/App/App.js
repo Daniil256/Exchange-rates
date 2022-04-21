@@ -4,21 +4,27 @@ import Header from './header/Header'
 import Footer from './footer/Footer'
 import Rate from './main/Rate'
 import Calc from './main/Calc'
-import Test from './other/Test'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
-class App extends React.Component {
+export default class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      date: '3'
+      currencySearch: '',
+      currencyAll: {},
+      months: ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"],
+      date: '',
     }
   }
-  updateData = (value) => {
-    this.setState({ date: value })
-  }
-  rate = (value) => {
-    this.setState({ rate: value })
+  componentDidMount() {
+    fetch('https://www.cbr-xml-daily.ru/daily_json.js')
+      .then(data => data.json())
+      .then(data => {
+        this.setState({ currencyAll: data })
+        console.log(data)
+        this.date = new Date(this.state.currencyAll.Date)
+        this.setState({ date: this.date.getDate() + ' ' + this.state.months[this.date.getMonth()] + ' ' + this.date.getFullYear() + 'г' })
+      })
   }
 
   render() {
@@ -29,9 +35,8 @@ class App extends React.Component {
           <main>
             <div className='container'>
               <Routes>
-                <Route path='/' element={<Rate updateData={this.updateData} rate={this.rate} />} />
-                <Route path='/calc' element={<Calc rate={this.state} />} />
-                <Route path='/test' element={<Test />} />
+                <Route path='/' element={<Rate objectFully={this.state.currencyAll.Valute} />} />
+                <Route path='/calc' element={<Calc currencyObject={this.state.currencyAll.Valute} />} />
               </Routes>
             </div>
           </main>
@@ -41,5 +46,3 @@ class App extends React.Component {
     )
   }
 }
-
-export default App;

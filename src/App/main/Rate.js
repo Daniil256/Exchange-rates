@@ -1,73 +1,100 @@
 import './main.css'
 import React from 'react'
 
-class Rate extends React.Component {
+export default class Rate extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            currencyRate: {},
-            currency: ['USD', 'RUB', 'CAD', 'EUR', 'UAH', 'KZT'],
-            currencySearch: '',
+            currencyRate: [],
+            currency: ['USD', 'CAD', 'EUR', 'UAH', 'KZT'],
             currencyAll: {},
             showAll: false,
             showAllBtn: 'Показать все позиции',
-            months: ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"],
-            current: 'USD'
+            current: 'AUD',
+            marker: {},
         }
-        this.result = {}
-        this.date = ''
-    }
-    componentDidMount() {
-        this.getRate()
+        this.result = []
+        this.x = this.state.current
+        this.arraySearch = []
     }
 
-    getRate = () => {
-        fetch('https://www.cbr-xml-daily.ru/latest.js')
-            .then(data => data.json())
-            .then(data => {
-                console.log(data)
-                this.setState({ currencyAll: data })
-                for (let i = 0; i < this.state.currency.length; i++) {
-                    this.result[this.state.currency[i]] = this.state.currencyAll.rates[this.state.currency[i]]
-                }
-                this.setState({ currencyRate: this.result })
-                this.date = new Date(this.state.currencyAll.date)
-                this.props.updateData(this.date.getDate() + ' ' + this.state.months[this.date.getMonth()] + ' ' + this.date.getFullYear() + 'г')
-                this.props.rate(this.state.currencyRate)
+    componentDidMount = () => {
+        setTimeout(() => {
+            this.setState({
+                currencyAll: this.props.objectFully,
+                currencyFullName: this.props.currencyFullName
             })
+            for (let i = 0; i < Object.keys(this.state.currencyAll).length; i++) {
+                this.result.push(Object.keys(this.state.currencyAll)[i])
+            }
+            this.setState({ currencyRate: this.state.currency })
+            this.marker()
+        }, 800)
     }
 
+    marker = () => {
+        const markerYesterday = {}
+
+        const markerToday = {}
+
+        const markerObject = {}
+
+        Object.keys(this.state.currencyAll).map((keyname) =>
+            markerYesterday[this.state.currencyAll[keyname].CharCode] = ((this.state.currencyAll[this.x].Previous / this.state.currencyAll[this.state.current].Nominal) / (this.state.currencyAll[keyname].Previous / this.state.currencyAll[keyname].Nominal)).toFixed(2))
+        Object.keys(this.state.currencyAll).map((keyname) =>
+            markerToday[this.state.currencyAll[keyname].CharCode] = ((this.state.currencyAll[this.x].Value / this.state.currencyAll[this.state.current].Nominal) / (this.state.currencyAll[keyname].Value / this.state.currencyAll[keyname].Nominal)).toFixed(2))
+
+        for (let i = 0; i < Object.keys(this.state.currencyAll).length; i++) {
+            if (markerYesterday[Object.keys(this.state.currencyAll)[i]] > markerToday[Object.keys(this.state.currencyAll)[i]]) {
+                markerObject[Object.keys(this.state.currencyAll)[i]] = '1.png'
+            }
+            else if (markerYesterday[Object.keys(this.state.currencyAll)[i]] < markerToday[Object.keys(this.state.currencyAll)[i]]) {
+                markerObject[Object.keys(this.state.currencyAll)[i]] = '2.png'
+            }
+            else if (markerYesterday[Object.keys(this.state.currencyAll)[i]] === markerToday[Object.keys(this.state.currencyAll)[i]]) {
+                markerObject[Object.keys(this.state.currencyAll)[i]] = '3.png'
+            }
+        }
+        this.setState({ marker: markerObject })
+
+    }
     showAllItems = () => {
         if (!this.state.showAll) {
             this.setState({
-                currencyRate: this.state.currencyAll.rates,
+                currencyRate: this.result,
                 showAll: true,
                 showAllBtn: 'Показать основные позиции'
             })
         } else {
             this.setState({
-                currencyRate: this.result,
+                currencyRate: this.state.currency,
                 showAll: false,
                 showAllBtn: 'Показать все позиции'
             })
         }
     }
     search = (e) => {
-        if (e.target.value.length > 2) {
-            if (this.state.currency.includes(e.target.value)) {
-                this.result = {}
-                this.result[e.target.value] = this.state.currencyAll.rates[e.target.value]
-                this.setState({ currencyRate: this.result })
-            } else { this.setState({ currencyRate: '' }) }
-        } else {
-            for (let i = 0; i < this.state.currency.length; i++) {
-                this.result[this.state.currency[i]] = this.state.currencyAll.rates[this.state.currency[i]]
+        this.arraySearch = []
+
+        for (let i = 0; i < Object.keys(this.state.currencyAll).length; i++) {
+            if (Object.keys(this.state.currencyAll)[i].match(e.target.value)) {
+                this.arraySearch.push(Object.keys(this.state.currencyAll)[i].match(e.target.value).input)
             }
-            this.setState({ currencyRate: this.result })
+        }
+
+        this.setState({ currencyRate: this.arraySearch })
+
+        if (e.target.value === '' && this.state.showAll === false) {
+            this.setState({ currencyRate: this.state.currency })
         }
     }
+
     current = (e) => {
+
+        this.x = e.target.value
         this.setState({ current: e.target.value })
+
+        this.marker()
     }
 
     render() {
@@ -76,18 +103,27 @@ class Rate extends React.Component {
                 <div className='rate_options'>
                     <span >Основная валюта</span>
                     <select name='currency_type2' onChange={this.current} >
-                        {Object.keys(this.state.currencyRate).map((keyname) =>
-                            <option value={keyname} key={keyname}>{keyname}</option>
+                        {Object.keys(this.state.currencyAll).map((keyname) =>
+                            <option value={keyname} key={keyname}>{this.state.currencyAll[keyname].Name} {keyname}</option>
                         )}
                     </select>
                     <button className='showbtn' onClick={this.showAllItems}>{this.state.showAllBtn}</button>
-                    <input type='text' className='input_search' placeholder='Поиск' onKeyUp={this.search} />
+                    <input type='text' className='input_search' placeholder='Поиск' onChange={this.search} />
                 </div>
                 <div className='row'>
-                    {Object.keys(this.state.currencyRate).map((keyname) =>
-                        <div className='block' key={keyname} title='Кликните чтобы увеличить'>
-                            <div className='currency_name'>{keyname}</div>
-                            <div className='currency_before'>{(this.state.currencyRate[keyname] / this.state.currencyAll.rates[this.state.current]).toFixed(2)}</div>
+
+                    <div className='block'  >
+                        <div className='currency_full_name'></div>
+                        <div className='currency_previous'>Вчера</div>
+                        <div className='currency_value'>Сегодня</div>
+                        <div className='currency_marker'></div>
+                    </div>
+                    {(this.state.currencyRate).map((keyname) =>
+                        <div className='block' key={keyname}  >
+                            <div className='currency_full_name'>{this.state.currencyAll[keyname].Name} {this.state.currencyAll[keyname].CharCode}</div>
+                            <div className='currency_previous'>1 {this.state.current} = {((this.state.currencyAll[this.state.current].Previous / this.state.currencyAll[this.state.current].Nominal) / (this.state.currencyAll[keyname].Previous / this.state.currencyAll[keyname].Nominal)).toFixed(2)} {keyname}</div>
+                            <div className='currency_value'>1 {this.state.current} = {((this.state.currencyAll[this.state.current].Value / this.state.currencyAll[this.state.current].Nominal) / (this.state.currencyAll[keyname].Value / this.state.currencyAll[keyname].Nominal)).toFixed(2)} {keyname}</div>
+                            <div className='currency_marker'><img src={this.state.marker[keyname]} width='20' alt='no' /></div>
                         </div>
                     )}
                 </div>
@@ -95,5 +131,3 @@ class Rate extends React.Component {
         )
     }
 }
-
-export default Rate;
